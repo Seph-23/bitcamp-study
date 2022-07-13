@@ -8,7 +8,7 @@ import java.util.Scanner;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class App {
+public class MyApp {
   public static void main(String[] args) {
     //Variable Declaration
     Scanner sc = new Scanner(System.in);
@@ -38,6 +38,7 @@ public class App {
       sc.nextLine();
       System.out.println();
 
+      System.out.println("---------------------------------------");
       if(menuNo==0){
         System.out.println("안녕히가세요!");
         break;
@@ -49,6 +50,11 @@ public class App {
       // }
 
       if(menuNo==1){        //모든 게시글 목록!!
+        if(boardCount==0){
+          System.out.println("게시글이 존재하지 않습니다.");
+          System.out.println();
+          continue;
+        }
         System.out.println("[게시글 목록]");
         System.out.println("번호 제목 조회수 작성자 등록일");
 
@@ -84,6 +90,7 @@ public class App {
           System.out.printf("등록일: %tY-%1$tm-%1$td-%1$tH:%1$tM\n", date);     //1$ 첫번째 데이터 계속 사용.
         }else{
           System.out.println("!!!조회한 게시글이 없습니다!!!");
+          System.out.println();
           continue;
         }
 
