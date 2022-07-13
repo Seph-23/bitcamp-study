@@ -5,6 +5,7 @@
 package com.bitcamp.board;
 
 import java.util.Scanner;
+import java.util.Date;
 
 public class App {
   public static void main(String[] args) {
@@ -12,6 +13,10 @@ public class App {
     Scanner sc = new Scanner(System.in);
     int menuNo;
     String title = " ", password = " ", writer = " ", content = " ";
+    int viewCount = 0;
+    long createdDate = 0;
+    Date date;
+    int no = 0;
 
     while(true){
       System.out.println("메뉴:");
@@ -52,14 +57,19 @@ public class App {
       }else if(menuNo==2){
         System.out.println("[게시판 상세보기]");
 
-        System.out.printf("번호: %d\n", 1);
+        System.out.printf("번호: %d\n", no);
         System.out.printf("제목: %s\n", title);
         System.out.printf("내용: %s\n", content);
-        System.out.printf("조회수: %d\n", 100);
+        System.out.printf("조회수: %d\n", viewCount);
         System.out.printf("작성자: %s\n", writer);
-        System.out.printf("등록일: %s\n", "2022-07-08");  
+
+        //Date 정보값 입력
+        date = new Date(createdDate);
+
+        System.out.printf("등록일: %tY-%1$tm-%1$td-%1$tH:%1$tM\n", date);     //1$ 첫번째 데이터 계속 사용.
       }else if(menuNo==3){
         System.out.println("[게시글 등록]");
+        no++;                                         //게시글 number++;
 
         System.out.print("제목? ");
         title = sc.nextLine();
@@ -72,6 +82,8 @@ public class App {
 
         System.out.print("작성자? ");
         writer = sc.nextLine();
+        
+        createdDate = System.currentTimeMillis();
       }else{
         System.out.println("메뉴 번호가 옳지 않습니다.");
       }
