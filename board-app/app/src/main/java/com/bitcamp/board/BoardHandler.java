@@ -16,7 +16,6 @@ public class BoardHandler {
   static int[] viewCount = new int[SIZE];
   static long[] createdDate = new long[SIZE];
 
-
   static void processList(){
     java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
@@ -41,8 +40,7 @@ public class BoardHandler {
   static void processDetail() {
     System.out.println("[게시글 상세보기]");
 
-    System.out.print("조회할 게시글 번호? ");
-    String input = Prompt.inputString();
+    String input = Prompt.inputString("조회할 게시글 번호? ");
     int boardNo = Integer.parseInt(input);
 
     // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
@@ -78,17 +76,10 @@ public class BoardHandler {
       return;
     }
 
-    System.out.print("제목? ");
-    title[boardCount] = Prompt.inputString();
-
-    System.out.print("내용? ");
-    content[boardCount] = Prompt.inputString();
-
-    System.out.print("작성자? "); 
-    writer[boardCount] = Prompt.inputString();
-
-    System.out.print("암호? ");
-    password[boardCount] = Prompt.inputString();
+    title[boardCount] = Prompt.inputString("제목? ");
+    content[boardCount] = Prompt.inputString("내용? ");
+    writer[boardCount] = Prompt.inputString("작성자? ");
+    password[boardCount] = Prompt.inputString("암호? ");
 
     no[boardCount] = boardCount == 0 ? 1 : no[boardCount - 1] + 1;
 
