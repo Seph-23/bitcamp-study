@@ -8,31 +8,25 @@ public class BoardHandler {
 
   static final int SIZE = 256;
 
-  static int[] no = new int[SIZE];
-  static String[] title = new String[SIZE];
-  static String[] content = new String[SIZE];
-  static String[] writer = new String[SIZE];
-  static String[] password = new String[SIZE];
-  static int[] viewCount = new int[SIZE];
-  static long[] createdDate = new long[SIZE];
+  static Board[] boards = new Board[SIZE];
 
   static void processList(){
     java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
     System.out.println("[게시글 목록]");
     System.out.println("번호 제목 조회수 작성자 등록일");
-    
+
     int i = 0;
     while (i < boardCount) {
       // 밀리초 데이터 ==> Date 도구함으로 날짜 정보를 설정
       java.util.Date date = new java.util.Date(createdDate[i]);
-      
+
       // 날짜 정보 ==> "yyyy-MM-dd" 형식의 문자열
       String dateStr = formatter.format(date); 
 
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
-        no[i], title[i], viewCount[i], writer[i], dateStr);
-      
+          no[i], title[i], viewCount[i], writer[i], dateStr);
+
       i++; // 배열 인덱스를 증가시킨다
     }
   }
@@ -76,16 +70,18 @@ public class BoardHandler {
       return;
     }
 
-    title[boardCount] = Prompt.inputString("제목? ");
-    content[boardCount] = Prompt.inputString("내용? ");
-    writer[boardCount] = Prompt.inputString("작성자? ");
-    password[boardCount] = Prompt.inputString("암호? ");
+    Board board = new Board();
 
-    no[boardCount] = boardCount == 0 ? 1 : no[boardCount - 1] + 1;
+    board.title = Prompt.inputString("제목? ");
+    board.content = Prompt.inputString("내용? ");
+    board.writer = Prompt.inputString("작성자? ");
+    board.password = Prompt.inputString("암호? ");
 
-    viewCount[boardCount] = 0;
-    createdDate[boardCount] = System.currentTimeMillis();
-    
+    //    no[boardCount] = boardCount == 0 ? 1 : no[boardCount - 1] + 1;
+
+    board.viewCount = 0;
+    board.createdDate = System.currentTimeMillis();
+
     boardCount++;
   }
 }
