@@ -18,50 +18,54 @@ public class BoardHandler {
 
     int i = 0;
     while (i < boardCount) {
+      Board board = boards[i];
       // 밀리초 데이터 ==> Date 도구함으로 날짜 정보를 설정
-      java.util.Date date = new java.util.Date(createdDate[i]);
+      java.util.Date date = new java.util.Date(board.createdDate);
 
       // 날짜 정보 ==> "yyyy-MM-dd" 형식의 문자열
       String dateStr = formatter.format(date); 
 
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
-          no[i], title[i], viewCount[i], writer[i], dateStr);
+          board.no, board.title, board.viewCount, board.writer, dateStr);
 
       i++; // 배열 인덱스를 증가시킨다
     }
   }
 
   static void processDetail() {
+    Board board = null;
+
     System.out.println("[게시글 상세보기]");
 
     String input = Prompt.inputString("조회할 게시글 번호? ");
     int boardNo = Integer.parseInt(input);
 
     // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    int boardIndex = -1;
     for (int i=0; i < boardCount; i++) {
-      if (no[i] == boardNo) {
-        boardIndex = i;
+      if (boards[i].no == boardNo) {
+        board = boards[i];
         break;
       }
     }
 
     // 사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
-    if (boardIndex == -1) {
+    if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다!");
       return;
     }
 
-    System.out.printf("번호: %d\n", no[boardIndex]);
-    System.out.printf("제목: %s\n", title[boardIndex]);
-    System.out.printf("내용: %s\n", content[boardIndex]);
-    System.out.printf("조회수: %d\n", viewCount[boardIndex]);
-    System.out.printf("작성자: %s\n", writer[boardIndex]);
-    java.util.Date date = new java.util.Date(createdDate[boardIndex]);
+    System.out.printf("번호: %d\n", board.no);
+    System.out.printf("제목: %s\n", board.title);
+    System.out.printf("내용: %s\n", board.content);
+    System.out.printf("조회수: %d\n", board.viewCount);
+    System.out.printf("작성자: %s\n", board.writer);
+    java.util.Date date = new java.util.Date(board.createdDate);
     System.out.printf("등록일: %tY-%1$tm-%1$td %1$tH:%1$tM\n", date);
   }
 
   static void processInput() {
+    Board board = new Board();
+
     System.out.println("[게시글 등록]");
 
     // 배열의 크기를 초과하지 않았는지 검사한다
@@ -70,18 +74,17 @@ public class BoardHandler {
       return;
     }
 
-    Board board = new Board();
-
     board.title = Prompt.inputString("제목? ");
     board.content = Prompt.inputString("내용? ");
     board.writer = Prompt.inputString("작성자? ");
     board.password = Prompt.inputString("암호? ");
 
-    //    no[boardCount] = boardCount == 0 ? 1 : no[boardCount - 1] + 1;
+    board.no = boardCount == 0 ? 1 : boards[boardCount - 1].no + 1;
 
     board.viewCount = 0;
     board.createdDate = System.currentTimeMillis();
 
+    boards[boardCount] = board;
     boardCount++;
   }
 }

@@ -5,23 +5,23 @@
 package com.bitcamp.board;
 
 public class App {
-  
+
   public static void main(String[] args) {
     welcome();
     loop:
-    while (true) {
-      displayMenu();
-      int menuNo = Prompt.inputInt("메뉴를 선택하세요[1..3](0: 종료) ");
-      displayLine();
-      switch(menuNo){
-        case 0: break loop;
-        case 1: BoardHandler.processList(); break;
-        case 2: BoardHandler.processDetail(); break;
-        case 3: BoardHandler.processInput(); break;
-        default: System.out.println("메뉴 번호가 옳지 않습니다!");
-      }
-      displayBlankLine();
-    } // while
+      while (true) {
+        displayMenu();
+        int menuNo = Prompt.inputInt("메뉴를 선택하세요[1..3](0: 종료) ");
+        displayLine();
+        switch(menuNo){
+          case 0: break loop;
+          case 1: BoardHandler.processList(); break;
+          case 2: BoardHandler.processDetail(); break;
+          case 3: BoardHandler.processInput(); break;
+          default: System.out.println("메뉴 번호가 옳지 않습니다!");
+        }
+        displayBlankLine();
+      } // while
     System.out.println("안녕히 가세요!");
     Prompt.close();
   }
