@@ -91,96 +91,34 @@ public class BoardHandler {
     boardCount++;
   }
 
-  static void processDelete() {
-    //    Board board = null;
+  static void deleteList() {
+    Board board = null;
 
     System.out.println("[게시글 삭제]");
 
     String input = Prompt.inputString("삭제 게시글 번호? ");
     int boardNo = Integer.parseInt(input);
 
-    //    //해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    //    for (int i=0; i < boardCount; i++) {
-    //      if (boards[i].no == boardNo) {
-    //        board = boards[i];
-    //        break;
-    //      }
-    //    }
-    //
-    //    //사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
-    //    if (board == null) {
-    //      System.out.println("해당 번호의 게시글이 없습니다!");
-    //      return;
-    //    }
-    //
-    //    for(int i = board.no; i<boardCount; i++) {
-    //      boards[i].no--;
-    //      boards[i-1] = boards[i];
-    //    }
-    //
-    //    System.out.println(board.no +"번 게시글을 삭제 하였습니다!");
-    //    boardCount--;
-
-
-    // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    int boardIndex = -1;
-    for (int i = 0; i < boardCount; i++) {
+    //해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
+    for (int i=0; i < boardCount; i++) {
       if (boards[i].no == boardNo) {
-        boardIndex = i;
+        board = boards[i];
         break;
       }
     }
 
-    // 사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
-    if (boardIndex == -1) {
+    //사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
+    if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다!");
       return;
     }
 
-    // 삭제할 게시글의 다음 항목을 앞으로 당긴다.
-    for (int i = boardIndex + 1; i < boardCount; i++) {
-      boards[i - 1] = boards[i];
+    for(int i = board.no-1; i<boardCount; i++) {
+      boards[i] = boards[i+1];
     }
 
-    // 게시글 개수를 1개 줄이고 맨 마지막 레퍼런스는 null 로 비운다.
-    boards[--boardCount] = null;
-
-    System.out.println("삭제하였습니다.");
-  }
-
-  public static void processUpdate() {
-    String titleTemp, contentTemp;
-
-    System.out.println("[게시글 변경]");
-
-    int boardNo = Prompt.inputInt("변경할 게시글 번호? ");
-
-    // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    int boardIndex = -1;
-    for (int i = 0; i < boardCount; i++) {
-      if (boards[i].no == boardNo) {
-        boardIndex = i;
-        break;
-      }
-    }
-
-    // 사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
-    if (boardIndex == -1) {
-      System.out.println("해당 번호의 게시글이 없습니다!");
-      return;
-    }else {
-      titleTemp = Prompt.inputString("제목?" + "(" + boards[boardIndex].title + ")");
-      contentTemp = Prompt.inputString("내용?" + "(" + boards[boardIndex].content + ")");
-    }
-
-    String yesOrNo = Prompt.inputString("변경하시겠습니까? (y/n)");
-
-    if(yesOrNo.equals("y")) {
-      boards[boardIndex].title = titleTemp;
-      boards[boardIndex].content = contentTemp;
-    }else {
-      System.out.println("변경 취소했습니다.");
-    }
+    System.out.println(board.no +"번 게시글을 삭제 하였습니다!");
+    boardCount--;
   }
 }
 
