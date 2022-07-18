@@ -32,7 +32,6 @@ public class BoardHandler {
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
           board.no, board.title, board.viewCount, board.writer, dateStr);
     }
-
   }
 
   static void processDetail() {
@@ -169,8 +168,8 @@ public class BoardHandler {
       System.out.println("해당 번호의 게시글이 없습니다!");
       return;
     }else {
-      titleTemp = Prompt.inputString("제목?" + "(" + boards[boardIndex].title + ")");
-      contentTemp = Prompt.inputString("내용?" + "(" + boards[boardIndex].content + ")");
+      titleTemp = Prompt.inputString("제목?(" + boards[boardIndex].title + ")");
+      contentTemp = Prompt.inputString("내용?(" + boards[boardIndex].content + ")");
     }
 
     String yesOrNo = Prompt.inputString("변경하시겠습니까? (y/n)");
@@ -183,7 +182,3 @@ public class BoardHandler {
     }
   }
 }
-
-
-
-

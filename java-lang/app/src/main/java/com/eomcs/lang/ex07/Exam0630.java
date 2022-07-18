@@ -18,6 +18,7 @@ public class Exam0630 {
     // => 집합에서 꺼낸 이름이 실제는 String 타입이지만,
     //    문법 상으로는 Object로 되어 있어서 
     //    변수를 선언할 때 Object 타입으로 변수를 선언해야 한다.
+
     for (Object key : keySet) {
       // getProperty()에 이름을 전달할 때는 String 을 전달해야 한다.
       // 물론 key에 들어 있는 것은 String 이 맞지만 

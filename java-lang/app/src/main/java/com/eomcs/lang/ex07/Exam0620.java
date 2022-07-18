@@ -10,7 +10,7 @@ public class Exam0620 {
     // 이름: 홍길동
     // 총점: 290
     // 평균: 96.9
-    //
+
     String name = System.getProperty("name");
     String s1 = System.getProperty("kor");
     String s2 = System.getProperty("eng");
@@ -32,5 +32,3 @@ public class Exam0620 {
     System.out.printf("평균: %.1f\n", sum / 3f);
   }
 }
-
-

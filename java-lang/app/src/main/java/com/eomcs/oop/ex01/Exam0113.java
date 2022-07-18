@@ -17,7 +17,6 @@ public class Exam0113 {
   }
 
   public static void main(String[] args) {
-
     Score s = new Score();
 
     s.name = "홍길동";
