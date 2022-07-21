@@ -12,6 +12,38 @@ public class BoardHandler {
   // Board 인스턴스의 주소를 저장할 레퍼런스 배열을 만든다.
   static Board[] boards = new Board[SIZE];
 
+  static void execute() {
+    while(true) {         //게시판
+      System.out.println("게시판:");
+      System.out.println("  1: 목록");
+      System.out.println("  2: 상세보기");
+      System.out.println("  3: 등록");
+      System.out.println("  4: 삭제");
+      System.out.println("  5: 변경");
+      System.out.println();
+      int menuNo = Prompt.inputInt("메뉴를 선택하세요[1..5](0: 이전) ");
+      displayHeadLine();
+      switch(menuNo){
+        case 0: return;
+        case 1: processList(); break;
+        case 2: processDetail(); break;
+        case 3: processInput(); break;
+        case 4: processDelete(); break;
+        case 5: processUpdate(); break;
+        default: System.out.println("메뉴 번호가 옳지 않습니다!");
+      }
+      displayBlankLine();
+    }
+  }
+
+  static void displayHeadLine(){
+    System.out.println("--------------------------------------");
+  }
+
+  static void displayBlankLine(){
+    System.out.println(); // 메뉴를 처리한 후 빈 줄 출력
+  }
+
   static void processList() {
     // 날짜 정보에서 값을 추출하여 특정 포맷의 문자열로 만들어줄 도구를 준비
     java.text.SimpleDateFormat formatter = 
@@ -97,29 +129,6 @@ public class BoardHandler {
 
     String input = Prompt.inputString("삭제 게시글 번호? ");
     int boardNo = Integer.parseInt(input);
-
-    //    //해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    //    for (int i=0; i < boardCount; i++) {
-    //      if (boards[i].no == boardNo) {
-    //        board = boards[i];
-    //        break;
-    //      }
-    //    }
-    //
-    //    //사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
-    //    if (board == null) {
-    //      System.out.println("해당 번호의 게시글이 없습니다!");
-    //      return;
-    //    }
-    //
-    //    for(int i = board.no; i<boardCount; i++) {
-    //      boards[i].no--;
-    //      boards[i-1] = boards[i];
-    //    }
-    //
-    //    System.out.println(board.no +"번 게시글을 삭제 하였습니다!");
-    //    boardCount--;
-
 
     // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
     int boardIndex = -1;
