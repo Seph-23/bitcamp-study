@@ -18,7 +18,14 @@ public class Test08 {
 
   static int countWaysToChangeDigit(int value) {
     int answer = 0;  
-    // 이 메서드를 완성하시오!
+
+    while(value != 0) {
+      value /= 10;
+      answer++;
+    }
+
+    answer = answer * 9 - 1;
+
     return answer;
   }
 }

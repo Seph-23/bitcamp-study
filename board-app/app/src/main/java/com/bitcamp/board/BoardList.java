@@ -85,17 +85,3 @@ public class BoardList {
     return ++no;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
