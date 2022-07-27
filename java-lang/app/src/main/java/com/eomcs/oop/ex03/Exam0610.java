@@ -43,5 +43,3 @@ public class Exam0610 {
     System.out.println("종료!");
   }
 }
-
-

@@ -1,4 +1,4 @@
-package com.eomcs.quiz.ex01;
+package com.eomcs.quiz.ex02;
 
 // 출처: codefights.com
 //
@@ -10,7 +10,7 @@ package com.eomcs.quiz.ex01;
 // [시간 복잡도]
 // - ?
 //
-public class Test06 {
+public class Test02 {
 
   public static void main(String[] args) {
     int[] values = {2, 4, 5, 6, 4, 3, 7, 8};
@@ -28,15 +28,11 @@ public class Test06 {
   }
 
   static void changeValuePosition(int[] values) {
-    int[] front = new int[values.length/2];
-    int[] back = new int[values.length/2];
-    for(int i=0, j=values.length/2; i<values.length/2;i++,j++) {
-      front[i] = values[i];
-      back[i] = values[j];
-    }
-    for(int i=values.length/2,j=0;j<values.length/2;i++,j++) {
-      values[i] = front[j];
-      values[j] = back[j];
+    int tmp;
+    for (int i = 0; i < values.length / 2; i++) {
+      tmp = values[i + values.length / 2];
+      values[i + values.length / 2] = values[i];
+      values[i] = tmp;
     }
   }
 }

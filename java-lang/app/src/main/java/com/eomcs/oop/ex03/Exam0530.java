@@ -22,5 +22,3 @@ public class Exam0530 {
     //    System.out.println(date); // 컴파일 오류!
   }
 }
-
-
