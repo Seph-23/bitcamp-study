@@ -69,13 +69,14 @@ public class BoardHandler {
     // boardList 인스턴스에 들어 있는 데이터 목록을 가져온다.
     Object[] list = this.boardList.toArray();
 
-    for (Object obj : list) {
-      Board board = (Board) obj;
+    for (Object item : list) {
+      Board board = (Board) item;
       Date date = new Date(board.createdDate);
       String dateStr = formatter.format(date); 
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
           board.no, board.title, board.viewCount, board.writer, dateStr);
     }
+
   }
 
   private void onDetail() {
@@ -156,3 +157,7 @@ public class BoardHandler {
     }
   }
 }
+
+
+
+
