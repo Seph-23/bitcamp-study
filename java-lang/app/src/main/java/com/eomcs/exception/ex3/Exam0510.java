@@ -40,5 +40,4 @@ public class Exam0510 {
       System.out.println("finally");
     }
   }
-
 }

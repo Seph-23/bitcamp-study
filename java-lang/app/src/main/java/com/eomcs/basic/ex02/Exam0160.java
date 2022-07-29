@@ -18,8 +18,3 @@ public class Exam0160 {
     System.out.printf("%s : %s\n", s1, s3); // 원본은 바뀌지 않는다.
   }
 }
-
-
-
-
-

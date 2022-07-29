@@ -48,5 +48,3 @@ public class Exam0130 {
     System.out.printf("등록일: %s\n", board.getCreatedDate());
   }
 }
-
-

@@ -22,5 +22,4 @@ public class Exam0110 {
     m1();
 
   }
-
 }

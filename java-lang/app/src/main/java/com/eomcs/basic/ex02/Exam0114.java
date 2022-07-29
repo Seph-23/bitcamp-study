@@ -19,5 +19,3 @@ public class Exam0114 {
     System.out.println(s2 == s3);
   }
 }
-
-

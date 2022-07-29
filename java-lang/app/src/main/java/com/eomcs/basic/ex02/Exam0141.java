@@ -3,8 +3,11 @@ package com.eomcs.basic.ex02;
 
 public class Exam0141 {
   public static void main(String[] args) {
+    Object test = new Object();
+    System.out.println(test.toString());
 
     Object obj = new String("Hello"); // 인스턴스 주소가 100이라 가정하자;
+    System.out.println(obj.toString());
 
     String x1 = (String) obj; // x1 <--- 100
 
@@ -25,5 +28,3 @@ public class Exam0141 {
     // obj.toString()은 String 클래스부터 해당 메서드를 찾는다.
   }
 }
-
-

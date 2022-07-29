@@ -51,7 +51,6 @@ public class Test05 {
         maxFractionIndex = i;
       }
     }
-
     return maxFractionIndex;
   }
 }

@@ -7,6 +7,7 @@ public class Exam0125 {
     StringBuffer b1 = new StringBuffer("Hello");
     StringBuffer b2 = new StringBuffer("Hello");
 
+
     // StringBuffer 에 들어 있는 문자열을 비교하려면?
     // - StringBuffer에서 String을 꺼내 비교하라!
     //
