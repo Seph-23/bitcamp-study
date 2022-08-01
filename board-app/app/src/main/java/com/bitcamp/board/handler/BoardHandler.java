@@ -5,9 +5,8 @@ package com.bitcamp.board.handler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import com.bitcamp.board.dao.BoardList;
+import com.bitcamp.board.dao.BoardDao;
 import com.bitcamp.board.domain.Board;
-import com.bitcamp.util.ListException;
 import com.bitcamp.util.Prompt;
 
 public class BoardHandler {
@@ -15,7 +14,7 @@ public class BoardHandler {
   private String title; // 게시판의 제목
 
   // 게시글 목록을 관리할 객체 준비
-  private BoardList boardList = new BoardList();
+  private BoardDao boardDao = new BoardDao();
 
   public BoardHandler() {
     this.title = "게시판";
@@ -74,22 +73,22 @@ public class BoardHandler {
     System.out.println("번호 제목 조회수 작성자 등록일");
 
     // boardList 인스턴스에 들어 있는 데이터 목록을 가져온다.
-    Object[] list = this.boardList.getArray();
+    Board[] boards = this.boardDao.findAll();
 
-    for (Object item : list) {      //for each
-      Board board = (Board) item;
+    for (Board board : boards) {
       Date date = new Date(board.createdDate);
       String dateStr = formatter.format(date); 
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
           board.no, board.title, board.viewCount, board.writer, dateStr);
     }
+
   }
 
-  private void onDetail() throws ListException {
+  private void onDetail() {
     System.out.printf("[%s 상세보기]\n", this.title);
 
     int boardNo = 0;
-    while (true) {//올바른 입력값이 들어올때까지 무한루프.
+    while (true) {
       try {
         boardNo = Prompt.inputInt("조회할 게시글 번호? ");
         break;
@@ -99,7 +98,7 @@ public class BoardHandler {
     }
 
     // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    Board board = this.boardList.retrieve(boardNo);
+    Board board = this.boardDao.findByNo(boardNo);
 
     // 사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
     if (board == null) {
@@ -129,12 +128,12 @@ public class BoardHandler {
     board.viewCount = 0;
     board.createdDate = System.currentTimeMillis();
 
-    this.boardList.append(board);
+    this.boardDao.insert(board);
 
     System.out.println("게시글을 등록했습니다.");
   }
 
-  private void onDelete() throws ListException {
+  private void onDelete() {
     System.out.printf("[%s 삭제]\n", this.title);
 
     int boardNo = 0;
@@ -147,14 +146,14 @@ public class BoardHandler {
       }
     }
 
-    if (boardList.delete(boardNo) != null) {
+    if (boardDao.delete(boardNo)) {
       System.out.println("삭제하였습니다.");
     } else {
       System.out.println("해당 번호의 게시글이 없습니다!");
     }
   }
 
-  private void onUpdate() throws ListException {
+  private void onUpdate() {
 
     System.out.printf("[%s 변경]\n", this.title);
 
@@ -163,12 +162,12 @@ public class BoardHandler {
       try {
         boardNo = Prompt.inputInt("변경할 게시글 번호? ");
         break;
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
         System.out.println("입력 값이 옳지 않습니다!");
       }
     }
 
-    Board board = this.boardList.retrieve(boardNo);
+    Board board = this.boardDao.findByNo(boardNo);
 
     if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다!");
@@ -188,3 +187,7 @@ public class BoardHandler {
     }
   }
 }
+
+
+
+
