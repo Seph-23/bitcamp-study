@@ -3,9 +3,11 @@
  */
 package com.bitcamp.util;
 
+import java.util.Scanner;
+
 public class Prompt {
 
-  private static java.util.Scanner keyboardInput = new java.util.Scanner(System.in);
+  private static Scanner keyboardInput = new Scanner(System.in);
 
   public static int inputInt() {
     String str = keyboardInput.nextLine();

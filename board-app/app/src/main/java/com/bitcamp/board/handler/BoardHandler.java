@@ -74,23 +74,22 @@ public class BoardHandler {
     System.out.println("번호 제목 조회수 작성자 등록일");
 
     // boardList 인스턴스에 들어 있는 데이터 목록을 가져온다.
-    Object[] list = this.boardList.toArray();
+    Object[] list = this.boardList.getArray();
 
-    for (Object item : list) {
+    for (Object item : list) {      //for each
       Board board = (Board) item;
       Date date = new Date(board.createdDate);
       String dateStr = formatter.format(date); 
       System.out.printf("%d\t%s\t%d\t%s\t%s\n",
           board.no, board.title, board.viewCount, board.writer, dateStr);
     }
-
   }
 
   private void onDetail() throws ListException {
     System.out.printf("[%s 상세보기]\n", this.title);
 
     int boardNo = 0;
-    while (true) {
+    while (true) {//올바른 입력값이 들어올때까지 무한루프.
       try {
         boardNo = Prompt.inputInt("조회할 게시글 번호? ");
         break;
@@ -100,7 +99,7 @@ public class BoardHandler {
     }
 
     // 해당 번호의 게시글이 몇 번 배열에 들어 있는지 알아내기
-    Board board = this.boardList.get(boardNo);
+    Board board = this.boardList.retrieve(boardNo);
 
     // 사용자가 입력한 번호에 해당하는 게시글을 못 찾았다면
     if (board == null) {
@@ -130,7 +129,7 @@ public class BoardHandler {
     board.viewCount = 0;
     board.createdDate = System.currentTimeMillis();
 
-    this.boardList.add(board);
+    this.boardList.append(board);
 
     System.out.println("게시글을 등록했습니다.");
   }
@@ -148,7 +147,7 @@ public class BoardHandler {
       }
     }
 
-    if (boardList.remove(boardNo)) {
+    if (boardList.delete(boardNo) != null) {
       System.out.println("삭제하였습니다.");
     } else {
       System.out.println("해당 번호의 게시글이 없습니다!");
@@ -169,7 +168,7 @@ public class BoardHandler {
       }
     }
 
-    Board board = this.boardList.get(boardNo);
+    Board board = this.boardList.retrieve(boardNo);
 
     if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다!");
@@ -189,7 +188,3 @@ public class BoardHandler {
     }
   }
 }
-
-
-
-
