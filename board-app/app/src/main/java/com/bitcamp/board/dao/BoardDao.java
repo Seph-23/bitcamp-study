@@ -1,25 +1,25 @@
 package com.bitcamp.board.dao;
 
 import com.bitcamp.board.domain.Board;
-import com.bitcamp.util.ObjectList;
+import com.bitcamp.util.LinkedList;
 
 // 게시글 목록을 관리하는 역할
 //
 public class BoardDao {
 
-  ObjectList list = new ObjectList();
+  LinkedList list = new LinkedList();
 
   private int boardNo = 0;
 
   public void insert(Object e) {
     Board board = (Board) e;
     board.no = nextNo();
-    list.add(e);
+    list.append(e);
   }
 
   public Board findByNo(int boardNo) {
-    for (int i = 0; i < list.size(); i++) {
-      Board board = (Board) list.get(i);
+    for (int i = 0; i < list.length(); i++) {
+      Board board = (Board) list.retrieve(i);
       if (board.no == boardNo) {
         return board;
       }
@@ -27,11 +27,11 @@ public class BoardDao {
     return null;
   }
 
-  public boolean delete(int boardNo) {
-    for (int i = 0; i < list.size(); i++) {
-      Board board = (Board) list.get(i);
+  public Boolean delete(int boardNo) {
+    for (int i = 0; i < list.length(); i++) {
+      Board board = (Board) list.retrieve(i);
       if (board.no == boardNo) {
-        return list.remove(i);
+        return list.delete(i) != null;
       }
     }
 
@@ -39,7 +39,7 @@ public class BoardDao {
   }
 
   public Board[] findAll() {
-    Object[] arr = list.toArray();
+    Object[] arr = list.getArray();
     Board[] boards = new Board[arr.length];
     for(int i=0; i<arr.length; i++) {
       boards[i] = (Board) arr[i]; 
