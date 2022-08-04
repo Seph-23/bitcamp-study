@@ -6,7 +6,7 @@ package com.eomcs.oop.ex09.a2.after;
 //
 public class ToolD {
   public void m1() {
-    System.out.println("ToolC.m1()");
+    System.out.println("ToolD.m1()");
   }
 }
 
