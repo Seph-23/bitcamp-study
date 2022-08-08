@@ -150,7 +150,6 @@ public class LinkedList<E> extends AbstractList<E> {
       this.value = v;
     }
   }
-
 } // LinkedList 끝
 
 
