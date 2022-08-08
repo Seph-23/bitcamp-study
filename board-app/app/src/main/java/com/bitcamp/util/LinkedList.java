@@ -118,11 +118,7 @@ public class LinkedList<E> extends AbstractList<E> {
   @Override
   public E[] toArray(E[] arr) {
 
-    // 파라미터로 받은 배열이 목록에 저장된 항목의 개수 보다 작다면
     if (arr.length < size) { 
-
-      // 파라미터로 받은 배열과 똑같은 타입의 배열을 만든다.
-      // 단 크기는 size 에 지정한 개수 만큼 만든다.
       arr = (E[]) Array.newInstance(
           arr.getClass().getComponentType(), // 레퍼런스 배열의 항목 타입
           size  /* 배열의 개수*/);

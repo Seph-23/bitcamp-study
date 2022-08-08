@@ -21,6 +21,24 @@ public class ListTest {
 
     Board b = list2.get(0); // 형변환 할 필요가 없다.
 
+    System.out.println("----------------------");
+
+    LinkedList<String> list3 = new LinkedList<>();
+    list3.add("홍길동");
+    list3.add("임꺽정");
+    list3.add("유관순");
+    list3.add("안중근");
+
+    //    String[] names = new String[list3.size()];
+    //    list3.toArray(names);
+
+    String[] names = list3.toArray(new String[0]);
+
+    for (String name : names) {
+      System.out.println(name);
+    }
+
+
   }
 }
 
