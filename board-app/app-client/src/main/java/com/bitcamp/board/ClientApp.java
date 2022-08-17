@@ -102,7 +102,7 @@ public class ClientApp {
   protected static void printTitle() {
     StringBuilder builder = new StringBuilder();
     for (String title : breadcrumbMenu) {
-      if (!builder.isEmpty()) {
+      if (!title.isEmpty()) {
         builder.append(" > ");
       }
       builder.append(title);
