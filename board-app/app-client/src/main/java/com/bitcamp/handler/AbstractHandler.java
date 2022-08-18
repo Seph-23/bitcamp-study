@@ -38,7 +38,7 @@ public abstract class AbstractHandler implements Handler {
   protected static void printTitle() {
     StringBuilder builder = new StringBuilder();
     for (String title : ClientApp.breadcrumbMenu) {
-      if (!builder.toString().isEmpty()) {
+      if (!builder.isEmpty()) {
         builder.append(" > ");
       }
       builder.append(title);
