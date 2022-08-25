@@ -46,10 +46,4 @@ public class Receiver4 {
     serverSocket.close();
     fileOut.close();
   }
-
 }
-
-
-
-
-
