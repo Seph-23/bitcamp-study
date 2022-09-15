@@ -1,15 +1,41 @@
-# 012. 인스턴스 목록을 다루는 코드를 분리: High Cohesion 구현(재사용성 강화)
-
+# 051. Application Server 구조로 전환하기
 
 ## 작업 내용
 
-### 1단계 - BoardHandler에서 인스턴스 목록을 다루는 코드를 분리한다.
+### 1단계 - app-client 프로젝트를 복사하여 app-server 프로젝트로 만든다.
 
-- com.bitcamp.board.BoardHandler 클래스 변경
-  - 목록과 관련된 필드를 BoardList 클래스로 옮긴다.
-  - 각 메서드에서 데이터 목록을 다루는 코드를 BoardList 클래스로 옮긴다.
-- com.bitcamp.board.BoardList 클래스 추가
-  - 관련 필드와 메서드를 정의한다.
-- com.bitcamp.board.App 클래스 변경
-  - BoardHandler의 생성자 변경에 맞춰 코드 변경
+- build.gradle 변경
+  - 이클립스 프로젝트 이름을 'board-app-server'로 변경
+  - application 메인 클래스를 ServerApp 으로 변경
 
+### 2단계 - 메인 클래스의 이름을 'ServerApp'으로 변경한다.
+
+- com.bitcamp.board.ServerApp 클래스 이름 변경
+
+### 3단계 - 클라이언트와 통신 프로토콜을 정의한다.
+
+```
+[client] <---------------------> [server]
+   |---- 접속 ---------------------->|
+   |<----- 환영 메시지 --------------|
+   |---- 사용자 입력 전송(요청) ---->|
+   |<----- 응답 메시지 --------------|
+   |         요청/응답 반복          |
+   |---- "quit" -------------------->| 
+   |          연결 끊기              |
+
+                   
+```
+
+```
+요청 메시지:
+  한 덩어리의 문자열
+
+응답 메시지: 
+  한 덩어리의 문자열
+
+```
+
+### 4단계 - 통신 프로토콜에 따라 클라이언트의 요청을 처리한다.
+
+- com.bitcamp.board.ServerApp 클래스 변경
