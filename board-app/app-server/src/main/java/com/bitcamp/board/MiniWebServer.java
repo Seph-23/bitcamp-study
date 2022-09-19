@@ -1,22 +1,28 @@
 package com.bitcamp.board;
 
+import static org.reflections.scanners.Scanners.TypesAnnotated;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import org.reflections.Reflections;
 import com.bitcamp.board.dao.BoardDao;
 import com.bitcamp.board.dao.MariaDBBoardDao;
 import com.bitcamp.board.dao.MariaDBMemberDao;
 import com.bitcamp.board.dao.MemberDao;
-import com.bitcamp.board.handler.BoardHandler;
 import com.bitcamp.board.handler.ErrorHandler;
-import com.bitcamp.board.handler.WelcomeHandler;
+import com.bitcamp.servlet.Servlet;
+import com.bitcamp.servlet.annotation.WebServlet;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -28,19 +34,57 @@ import com.sun.net.httpserver.HttpServer;
 // 4) 메인 화면을 출력하는 요청처리 객체를 분리하기
 // 5) 요청 자원의 경로를 구분하여 처리하기
 // 6) 게시글 요청 처리하기
+// 7) URL 디코딩 처리
+// 8) 회원 요청 처리하기
 //
 public class MiniWebServer {
 
+  public static void main2(String[] args) throws Exception {
+    // 클래스를 찾아주는 도구를 준비
+    Reflections reflections = new Reflections("com.bitcamp.board");
+
+    Set<Class<?>> servlets = reflections.get(TypesAnnotated.with(WebServlet.class).asClass());
+    for (Class<?> servlet : servlets) {
+      WebServlet anno = servlet.getAnnotation(WebServlet.class);
+      System.out.printf("%s ---> %s\n", anno.value(), servlet.getName());
+    }
+  }
+
   public static void main(String[] args) throws Exception {
     Connection con = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/studydb","root","sql1324");
+        "jdbc:mysql://localhost:3306/studydb","study","1111");
 
     BoardDao boardDao = new MariaDBBoardDao(con);
     MemberDao memberDao = new MariaDBMemberDao(con);
 
-    WelcomeHandler welcomeHandler = new WelcomeHandler();
+    // 서블릿 객체를 보관할 맵을 준비
+    Map<String,Servlet> servletMap = new HashMap<>();
+
+    // WebServlet 애노테이션이 붙은 클래스를 찾아 객체를 생성한 후 맵에 저장한다.
+    // 맵에 저장할 때 사용할 key는 WebServlet 애노테이션에 설정된 값이다.
+    //
+    Reflections reflections = new Reflections("com.bitcamp.board");
+    Set<Class<?>> servlets = reflections.get(TypesAnnotated.with(WebServlet.class).asClass());
+    for (Class<?> servlet : servlets) {
+      // 서블릿 클래스의 붙은 WebServlet 애노테이션으로부터 path 를 꺼낸다.
+      String servletPath = servlet.getAnnotation(WebServlet.class).value();
+
+      // 생성자의 파라미터의 타입을 알아내, 해당 객체를 주입한다.
+      Constructor<?> constructor = servlet.getConstructors()[0];
+      Parameter[] params = constructor.getParameters();
+
+      if (params.length == 0) { // 생성자의 파라미터가 없다면 
+        servletMap.put(servletPath, (Servlet) constructor.newInstance());
+
+      } else if (params[0].getType() == BoardDao.class) {
+        servletMap.put(servletPath, (Servlet) constructor.newInstance(boardDao));
+
+      } else if (params[0].getType() == MemberDao.class) {
+        servletMap.put(servletPath, (Servlet) constructor.newInstance(memberDao));
+      } 
+    }
+
     ErrorHandler errorHandler = new ErrorHandler();
-    BoardHandler boardHandler = new BoardHandler(boardDao);
 
     class MyHttpHandler implements HttpHandler {
       @Override
@@ -49,7 +93,8 @@ public class MiniWebServer {
 
         URI requestUri = exchange.getRequestURI();
         String path = requestUri.getPath();
-        String query = requestUri.getQuery();
+        // String query = requestUri.getQuery(); // 디코딩을 제대로 수행하지 못한다!
+        String query = requestUri.getRawQuery(); // 디코딩 없이 query string을 그대로 리턴 받기!
         byte[] bytes = null;
 
         try (StringWriter stringWriter = new StringWriter();
@@ -60,34 +105,18 @@ public class MiniWebServer {
             String[] entries = query.split("&");
             for (String entry : entries) { // 예) no=1
               String[] kv = entry.split("=");
-              paramMap.put(kv[0], kv[1]);
+              // 웹브라우저가 보낸 파라미터 값은 저장하기 전에 URL 디코딩 한다.
+              paramMap.put(kv[0], URLDecoder.decode(kv[1], "UTF-8"));
             }
           }
           System.out.println(paramMap);
 
-          if (path.equals("/")) {
-            welcomeHandler.service(paramMap, printWriter);
+          Servlet servlet = servletMap.get(path);
 
-          } else if (path.equals("/board/list")) {
-            boardHandler.list(paramMap, printWriter);
-
-          } else if (path.equals("/board/detail")) {
-            boardHandler.detail(paramMap, printWriter);
-
-          } else if (path.equals("/board/update")) {
-            boardHandler.update(paramMap, printWriter);
-
-          } else if (path.equals("/board/delete")) {
-            boardHandler.delete(paramMap, printWriter);
-
-          } else if (path.equals("/board/form")) {
-            boardHandler.form(paramMap, printWriter);
-          } else if (path.equals("/board/add")) {
-            boardHandler.add(paramMap, printWriter);
-
+          if (servlet != null) {
+            servlet.service(paramMap, printWriter);
           } else {
-            errorHandler.error(paramMap, printWriter);
-
+            errorHandler.service(paramMap, printWriter);
           }
 
           bytes = stringWriter.toString().getBytes("UTF-8");
