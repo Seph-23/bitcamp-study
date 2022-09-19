@@ -12,16 +12,14 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.reflections.Reflections;
-import com.bitcamp.board.dao.BoardDao;
-import com.bitcamp.board.dao.MariaDBBoardDao;
-import com.bitcamp.board.dao.MariaDBMemberDao;
-import com.bitcamp.board.dao.MemberDao;
 import com.bitcamp.board.handler.ErrorHandler;
 import com.bitcamp.servlet.Servlet;
+import com.bitcamp.servlet.annotation.Repository;
 import com.bitcamp.servlet.annotation.WebServlet;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -43,10 +41,27 @@ public class MiniWebServer {
     // 클래스를 찾아주는 도구를 준비
     Reflections reflections = new Reflections("com.bitcamp.board");
 
-    Set<Class<?>> servlets = reflections.get(TypesAnnotated.with(WebServlet.class).asClass());
-    for (Class<?> servlet : servlets) {
-      WebServlet anno = servlet.getAnnotation(WebServlet.class);
-      System.out.printf("%s ---> %s\n", anno.value(), servlet.getName());
+    /*
+    // 지정된 패키지에서 @WebServlet 애노테이션이 붙은 클래스를 모두 찾는다.
+    // 검색필터 1) WebServlet 애노테이션이 붙어 있는 클래스의 이름들을 모두 찾아라!
+    QueryFunction<Store,String> 검색필터1 = TypesAnnotated.with(WebServlet.class);
+
+    // 검색필터 2) 찾은 클래스 이름을 가지고 클래스를 Method Area 영역에 로딩하여
+    //             Class 객체 목록을 리턴하라!
+    QueryFunction<Store,Class<?>> 검색필터2 = 검색필터1.asClass();
+
+    // 위의 두 검색 조건으로 클래스를 찾는다.
+    Set<Class<?>> 서블릿클래스들 = reflections.get(검색필터2);
+
+    for (Class<?> 서블릿클래스정보 : 서블릿클래스들) {
+      System.out.println(서블릿클래스정보.getName());
+    }
+     */
+
+    Set<Class<?>> servletClassInfoList = reflections.get(TypesAnnotated.with(WebServlet.class).asClass());
+    for (Class<?> servletClassInfo : servletClassInfoList) {
+      WebServlet anno = servletClassInfo.getAnnotation(WebServlet.class);
+      System.out.printf("%s ---> %s\n", anno.value(), servletClassInfo.getName());
     }
   }
 
@@ -54,16 +69,18 @@ public class MiniWebServer {
     Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/studydb","study","1111");
 
-    BoardDao boardDao = new MariaDBBoardDao(con);
-    MemberDao memberDao = new MariaDBMemberDao(con);
+    // 객체 (DAO, Servlet) 보관할 맵을 준비
+    Map<String,Object> objMap = new HashMap<>();
 
-    // 서블릿 객체를 보관할 맵을 준비
-    Map<String,Servlet> servletMap = new HashMap<>();
-
-    // WebServlet 애노테이션이 붙은 클래스를 찾아 객체를 생성한 후 맵에 저장한다.
-    // 맵에 저장할 때 사용할 key는 WebServlet 애노테이션에 설정된 값이다.
-    //
+    // DAO 객체를 찾아 맵에 보관한다.
     Reflections reflections = new Reflections("com.bitcamp.board");
+    Set<Class<?>> classes = reflections.get(TypesAnnotated.with(Repository.class).asClass());
+    for (Class<?> clazz : classes) {
+      String objName = clazz.getAnnotation(Repository.class).value();
+      Constructor<?> constructor = clazz.getConstructor(Connection.class);
+      objMap.put(objName, constructor.newInstance(con));
+    }
+
     Set<Class<?>> servlets = reflections.get(TypesAnnotated.with(WebServlet.class).asClass());
     for (Class<?> servlet : servlets) {
       // 서블릿 클래스의 붙은 WebServlet 애노테이션으로부터 path 를 꺼낸다.
@@ -73,15 +90,15 @@ public class MiniWebServer {
       Constructor<?> constructor = servlet.getConstructors()[0];
       Parameter[] params = constructor.getParameters();
 
-      if (params.length == 0) { // 생성자의 파라미터가 없다면 
-        servletMap.put(servletPath, (Servlet) constructor.newInstance());
+      if (params.length == 0) { // 생성자의 파라미터가 없다면
+        objMap.put(servletPath, constructor.newInstance());
 
-      } else if (params[0].getType() == BoardDao.class) {
-        servletMap.put(servletPath, (Servlet) constructor.newInstance(boardDao));
-
-      } else if (params[0].getType() == MemberDao.class) {
-        servletMap.put(servletPath, (Servlet) constructor.newInstance(memberDao));
-      } 
+      } else {      //생성자의 파라미터가 있다면, 해당 파라미터의 객체를 찾아 생성자를 호출한다.
+        Object argument = findObject(objMap, params[0].getType());
+        if (argument != null) {
+          objMap.put(servletPath, constructor.newInstance(argument));
+        }
+      }
     }
 
     ErrorHandler errorHandler = new ErrorHandler();
@@ -111,7 +128,7 @@ public class MiniWebServer {
           }
           System.out.println(paramMap);
 
-          Servlet servlet = servletMap.get(path);
+          Servlet servlet = (Servlet) objMap.get(path);
 
           if (servlet != null) {
             servlet.service(paramMap, printWriter);
@@ -146,4 +163,16 @@ public class MiniWebServer {
     System.out.println("서버 시작!");
   }
 
+  private static Object findObject(Map<String, Object> objMap, Class<?> type) {
+    //맵에 들어있는 객체를 모두 꺼낸다.
+    Collection<Object> values = objMap.values();
+
+    // 꺼낸 객체들 중에 해당 타입의 인스턴스가 있는지 알아본다.
+    for (Object value : values) {
+      if (type.isInstance(value)) {
+        return value;
+      }
+    }
+    return null;
+  }
 }
