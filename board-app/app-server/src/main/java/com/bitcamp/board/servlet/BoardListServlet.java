@@ -5,30 +5,18 @@ package com.bitcamp.board.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.bitcamp.board.dao.BoardDao;
-import com.bitcamp.board.dao.MariaDBBoardDao;
 import com.bitcamp.board.domain.Board;
 
 @WebServlet(value="/board/list")
 public class BoardListServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
-  private BoardDao boardDao;
-
-  public BoardListServlet() throws Exception {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection con = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/studydb","study","1111");
-    boardDao = new MariaDBBoardDao(con);
-  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -54,7 +42,7 @@ public class BoardListServlet extends HttpServlet {
     out.println("<a href='form'>새 글</a>");
 
     try {
-      List<Board> boards = boardDao.findAll();
+      List<Board> boards = AppInitServlet.boardDao.findAll();
       out.println("<table border='1'>");
       out.println("  <tr>");
       out.println("    <th>번호</th>");
