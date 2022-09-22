@@ -40,8 +40,7 @@ public class BoardAddServlet extends HttpServlet {
       board.content = req.getParameter("content");
       board.memberNo = Integer.parseInt(req.getParameter("writerNo"));
 
-
-      if (AppInitServlet.boardDao.insert(board) == 0) {
+      if (AppInitServlet.insert(board) == 0) {
         out.println("<p>게시글을 등록할 수 없습니다!</p>");
 
       } else {
@@ -53,10 +52,7 @@ public class BoardAddServlet extends HttpServlet {
 
     out.println("</body>");
     out.println("</html>");
-
   }
-
-
 }
 
 
