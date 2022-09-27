@@ -4,10 +4,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>bitcamp</title>
+<title>계산기</title>
 </head>
 <body>
-<h1>게시글 변경(JSP + Servlet)</h1>
-<p>해당 게시글을 변경했습니다.</p>
+<h1>계산기</h1>
+100 + 200 = <%=plus(100, 200)%>
 </body>
 </html>
+<%!
+int plus(int a, int b) {
+  return a + b;
+}
+%>

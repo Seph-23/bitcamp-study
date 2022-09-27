@@ -2,6 +2,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
+<%@ page import="com.bitcamp.board.dao.BoardDao"%>
 <%@ page import="com.bitcamp.board.domain.Board"%>
 <!DOCTYPE html>
 <html>
@@ -31,11 +32,11 @@ List<Board> boards = (List<Board>) request.getAttribute("boards");
 for (Board board : boards) {
 %>
     <tr>
-      <td>${board.no}</td>
-      <td><a href='detail?no=${board.no}'>${board.title}</a></td>
-      <td>${board.viewCount}</td>
-      <td>${board.memberNo}</td>
-      <td>${board.createdDate}</td>
+      <td><%=board.no%></td>
+      <td><a href='detail?no=<%=board.no%>'><%=board.title%></a></td>
+      <td><%=board.viewCount%></td>
+      <td><%=board.memberNo%></td>
+      <td><%=board.createdDate%></td>
     </tr>
 <%   
 }
