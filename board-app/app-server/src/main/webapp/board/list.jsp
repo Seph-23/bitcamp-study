@@ -16,7 +16,7 @@ tr:hover {
 </style>
 </head>
 <body>
-  <h1>게시글(JSP+Servlet)</h1>
+  <h1>게시글(JSP+Servlet+EL)</h1>
   <a href='form'>새 글</a>
   <table border='1'>
     <tr>
@@ -29,6 +29,7 @@ tr:hover {
 <% 
 List<Board> boards = (List<Board>) request.getAttribute("boards");
 for (Board board : boards) {
+  pageContext.setAttribute("board", board);
 %>
     <tr>
       <td>${board.no}</td>
