@@ -6,30 +6,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.bitcamp.board.service.MemberService;
+import javax.servlet.http.HttpSession;
 
-@WebServlet("/member/delete")
-public class MemberDeleteController extends HttpServlet {
+@WebServlet("/auth/logout")
+public class LogoutController extends HttpServlet {
   private static final long serialVersionUID = 1L;
-
-  MemberService memberService;
-
-  @Override
-  public void init() {
-    memberService = (MemberService) this.getServletContext().getAttribute("memberService");
-  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      int no = Integer.parseInt(request.getParameter("no"));
+      HttpSession session = request.getSession();
+      session.invalidate(); // 현재 세션을 무효화시킨다.
 
-      if (!memberService.delete(no)) {
-        throw new Exception("회원 삭제 오류입니다!");
-      }
-
-      response.sendRedirect("list");
+      response.sendRedirect("../"); // 로그아웃 한 후 메인 페이지를 요청하라고 응답한다.
 
     } catch (Exception e) {
       request.setAttribute("exception", e);

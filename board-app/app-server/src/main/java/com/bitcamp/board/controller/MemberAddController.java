@@ -6,32 +6,32 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.bitcamp.board.dao.MemberDao;
 import com.bitcamp.board.domain.Member;
+import com.bitcamp.board.service.MemberService;
 
 @WebServlet("/member/add")
 public class MemberAddController extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  MemberDao memberDao;
+  MemberService memberService;
 
   @Override
   public void init() {
-    memberDao = (MemberDao) this.getServletContext().getAttribute("memberDao");
+    memberService = (MemberService) this.getServletContext().getAttribute("memberService");
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      Member member = new Member();
-      member.name = request.getParameter("name");
-      member.email = request.getParameter("email");
-      member.password = request.getParameter("password");
+      request.setCharacterEncoding("UTF-8");
 
-      if (memberDao.insert(member) == 0) {
-        throw new Exception("회원 등록 오류입니다!");
-      }
+      Member member = new Member();
+      member.setName(request.getParameter("name"));
+      member.setEmail(request.getParameter("email"));
+      member.setPassword(request.getParameter("password"));
+
+      memberService.add(member);
 
       response.sendRedirect("list");
 

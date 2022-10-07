@@ -17,6 +17,9 @@ dependencies {
     implementation 'org.reflections:reflections:0.10.2'
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'javax.servlet:jstl:1.2'
+    //implementation 'commons-fileupload:commons-fileupload:1.4'
+    
 }
 
 application {
