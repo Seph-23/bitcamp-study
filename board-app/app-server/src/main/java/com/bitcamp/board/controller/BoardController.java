@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.bitcamp.board.domain.AttachedFile;
 import com.bitcamp.board.domain.Board;
@@ -39,13 +40,9 @@ public class BoardController {
 
   @PostMapping("add") 
   public String add(
-      String title, 
-      String content, 
-      MultipartFile[] files,
+      Board board,
+      @RequestParam("files") MultipartFile[] files,
       HttpSession session) throws Exception {
-    Board board = new Board();
-    board.setTitle(title);
-    board.setContent(content);
     board.setAttachedFiles(saveAttachedFiles(files));
     board.setWriter((Member) session.getAttribute("loginMember"));
 
@@ -110,16 +107,11 @@ public class BoardController {
 
   @PostMapping("update")
   public String update(
-      int no,
-      String title,
-      String content,
-      Part[] files,
+      Board board,
+      @RequestParam("files") Part[] files,
       HttpSession session) 
           throws Exception {
-    Board board = new Board();
-    board.setNo(no);
-    board.setTitle(title);
-    board.setContent(content);
+
     board.setAttachedFiles(saveAttachedFiles(files));
 
     checkOwner(board.getNo(), session);
@@ -174,9 +166,3 @@ public class BoardController {
     return "redirect:detail?no=" + board.getNo();
   }
 }
-
-
-
-
-
-
