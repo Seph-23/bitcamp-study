@@ -3,18 +3,19 @@ package com.bitcamp.board.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.bitcamp.board.domain.AttachedFile;
 import com.bitcamp.board.domain.Board;
@@ -33,16 +34,24 @@ public class BoardController {
     this.sc = sc;
   }
 
+  // InternalResourceViewResolver 사용 전:
+  //
+  //  @GetMapping("form")
+  //  public String form() throws Exception {
+  //    return "board/form";
+  //  }
+
+  // InternalResourceViewResolver 사용 후:
   @GetMapping("form")
-  public String form() throws Exception {
-    return "/board/form.jsp";
+  public void form() throws Exception {
   }
 
   @PostMapping("add") 
   public String add(
       Board board,
-      @RequestParam("files") MultipartFile[] files,
+      MultipartFile[] files,
       HttpSession session) throws Exception {
+
     board.setAttachedFiles(saveAttachedFiles(files));
     board.setWriter((Member) session.getAttribute("loginMember"));
 
@@ -85,30 +94,26 @@ public class BoardController {
   }
 
   @GetMapping("list")
-  public String list(HttpServletRequest req) throws Exception {
-    req.setAttribute("boards", boardService.list());
-    return "/board/list.jsp";
+  public void list(Model model) throws Exception {
+    model.addAttribute("boards", boardService.list());
   }
 
   @GetMapping("detail")
-  public String detail(
-      int no, 
-      HttpServletRequest request) 
-          throws Exception {
+  public Map detail(int no) throws Exception {
     Board board = boardService.get(no);
     if (board == null) {
       throw new Exception("해당 번호의 게시글이 없습니다!");
     }
 
-    request.setAttribute("board", board);
-
-    return "/board/detail.jsp";
+    Map map = new HashMap();
+    map.put("board", board);
+    return map;
   }
 
   @PostMapping("update")
   public String update(
       Board board,
-      @RequestParam("files") Part[] files,
+      Part[] files,
       HttpSession session) 
           throws Exception {
 
@@ -166,3 +171,9 @@ public class BoardController {
     return "redirect:detail?no=" + board.getNo();
   }
 }
+
+
+
+
+
+
